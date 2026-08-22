@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Project from "../models/Project";
-import { start } from "node:repl";
 import mongoose from "mongoose";
+import Task from "../models/Task";
 
 export const createProject = async(req:Request,res:Response) =>{
     try{
@@ -74,9 +74,9 @@ export const getProjectById = async(req:Request, res:Response) =>{
                 message: "Project not found",
             });
         }
-    
+
         return res.status(200).json({
-            project,
+            project
         });
 
     } catch(error){
@@ -85,6 +85,57 @@ export const getProjectById = async(req:Request, res:Response) =>{
         });
     };
 } 
+
+export const getProjectProgress = async (req:Request,res:Response) =>{
+    try{
+        const { id } = req.params as { id: string };
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                message: "Invalid project ID",
+            });
+        }
+
+        const project = await Project.findById(id);
+
+        if (!project) {
+            return res.status(404).json({
+                message: "Project not found",
+            });
+        }
+
+    
+        const tasks = await Task.find({project:id});
+
+        const totalTasks = tasks.length;
+
+        const todo = tasks.filter((task) => task.status ==="todo").length;
+        const in_progress = tasks.filter((task) => task.status ==="in_progress").length;
+        const completed = tasks.filter((task) => task.status ==="completed").length;
+
+        const percentage = totalTasks===0?0:Math.round((completed/totalTasks)*100);
+
+
+        return res.status(200).json({
+            project:{
+                id:project._id,
+                name:project.name
+            },
+            progress: {
+                totalTasks,
+                todo,
+                in_progress,
+                completed,
+                percentage
+            }
+        });
+
+    } catch (error){
+        return res.status(500).json({
+            message: "Server error",
+        });
+    }
+}
 
 export const updateProject = async(req:Request, res:Response) =>{
     try{
