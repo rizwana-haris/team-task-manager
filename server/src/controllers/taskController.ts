@@ -76,12 +76,12 @@ export const getTasks = async( req:Request,res:Response) =>{
             tasks= await Task.find()
             .populate("project","name")
             .populate("assignedTo","name email")
-            .sort({ cretaedAt: -1});
+            .sort({ createdAt: -1});
         } else{
              tasks = await Task.find({assignedTo:req.user.userId })
             .populate("project","name")
             .populate("assignedTo","name email")
-            .sort({ cretaedAt: -1}); 
+            .sort({ createdAt: -1}); 
         }
         return res.status(200).json({
             tasks
@@ -204,7 +204,9 @@ export const updateTask = async(req:Request, res:Response) =>{
         });
         
     } catch(error){
-
+         return res.status(500).json({
+            message: "Server error",
+        });
     }
 }
 
