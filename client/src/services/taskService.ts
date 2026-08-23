@@ -34,3 +34,9 @@ export const createTask = async (
 
   return response.data.task;
 };
+
+export const getTasks = async (): Promise<Task[]> => {
+  const response = await api.get("/tasks");
+
+  return response.data.tasks;
+};

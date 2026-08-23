@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import { getProjects,createProject, type Project } from "../services/projectService";
 import { createTeamMember, getTeamMembers, type TeamMember } from "../services/userService";
-import { createTask } from "../services/taskService";
+import { createTask, getTasks, type Task } from "../services/taskService";
 
 interface User {
     userId:string;
@@ -36,6 +36,8 @@ const Dashboard = () =>{
     const [taskDeadline, setTaskDeadline] = useState("");
     const [taskMessage, setTaskMessage] = useState("");
 
+    const [tasks, setTasks] = useState<Task[]>([]);
+    
     const handleCreateProject = async (event:React.SubmitEvent) =>{ 
         event.preventDefault();
         setProjectMessage("");
@@ -89,7 +91,7 @@ const Dashboard = () =>{
         setTaskMessage("");
 
         try{
-            await createTask({
+            const createdTask = await createTask({
                 title: taskTitle,
                 description: taskDescription,
                 project: taskProject,
@@ -98,6 +100,7 @@ const Dashboard = () =>{
                 deadline: taskDeadline,
             });
             
+            setTasks((previousTasks) => [createdTask, ...previousTasks]);
             setTaskMessage("Task created successfully");
 
             setTaskTitle("");
@@ -124,6 +127,9 @@ const Dashboard = () =>{
                 const projectsData = await getProjects();
                 setProjects(projectsData);
 
+                const tasksData = await getTasks();
+                setTasks(tasksData);
+                
                 if (loggedInUser.role === "admin") {
                     const members = await getTeamMembers();
                     setTeamMembers(members);
@@ -273,6 +279,29 @@ const Dashboard = () =>{
 
                     </form>
                     {taskMessage && <p>{taskMessage}</p>}
+
+                    <h3>Tasks</h3>
+                    { tasks.length===0?(<p>No tasks found</p>)
+                    :(
+                        <div>
+                            {tasks.map((task) =>(
+                                <div key={task._id}>
+                                    <h4>{task.title}</h4>
+                                    <p>Description: {task.description}</p>
+                                    <p>Project: {task.project.name}</p>
+                                    <p>Assigned To: {task.assignedTo.name}</p>
+                                    <p>Status: {task.status}</p>
+                                    <p>Priority: {task.priority}</p>
+                                    <p>
+                                        Deadline:{" "}
+                                        {new Date(task.deadline).toLocaleDateString()}
+                                    </p>
+                                </div>                            
+                            ))}
+                        </div>
+
+                    )}
+           
 
                     <h3>Create Project</h3>
                     <form onSubmit={handleCreateProject}>
