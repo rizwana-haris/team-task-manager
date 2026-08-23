@@ -44,3 +44,20 @@ export const createTeamMember = async (req:Request, res:Response) =>{
         })
     }
 }
+
+export const getTeamMembers = async (req:Request, res:Response) =>{
+    try{
+
+        const users = await User.find(
+            {role:"team_member"},
+            "name email"
+        )
+        return res.status(200).json({users});
+
+    } catch(error){
+        return res.status(500).json({
+            message: "Server error"
+        })
+    }
+}
+    
