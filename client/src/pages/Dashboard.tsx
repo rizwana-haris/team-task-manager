@@ -23,16 +23,26 @@ const Dashboard = () =>{
         fetchUser();
     },[]);
 
+    if (!user) {
+        return <p>Loading...</p>;
+    }
+
     return(
         <div>
             <h1>Dashboard</h1>
 
             <p>{message}</p>
 
-            {user && (
+            {user.role==="admin" && (
                 <div>
-                    <p>UserID:{user.userId}</p>
-                    <p>Role:{user.role}</p>
+                    <h2>Admin Dashboard</h2>
+                    <p>Welcome Admin</p>
+                </div>
+            )}
+            {user.role === "team_member" && (
+                <div>
+                    <h2>Team Member Dashboard</h2>
+                    <p>Welcome Team Member!</p>
                 </div>
             )}
         </div>
