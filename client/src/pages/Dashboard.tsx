@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import { getProjects,createProject, type Project } from "../services/projectService";
 import { createTeamMember, getTeamMembers, type TeamMember } from "../services/userService";
+import { createTask } from "../services/taskService";
 
 interface User {
     userId:string;
@@ -27,8 +28,15 @@ const Dashboard = () =>{
 
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
-    const handleCreateProject = async (event:React.SubmitEvent) =>{
-        
+    const [taskTitle, setTaskTitle] = useState("");
+    const [taskDescription, setTaskDescription] = useState("");
+    const [taskProject, setTaskProject] = useState("");
+    const [taskAssignedTo, setTaskAssignedTo] = useState("");
+    const [taskPriority, setTaskPriority] = useState("medium");
+    const [taskDeadline, setTaskDeadline] = useState("");
+    const [taskMessage, setTaskMessage] = useState("");
+
+    const handleCreateProject = async (event:React.SubmitEvent) =>{ 
         event.preventDefault();
         setProjectMessage("");
 
@@ -54,8 +62,7 @@ const Dashboard = () =>{
         }
     }
 
-    const handleCreateTeamMember = async (event:React.SubmitEvent) =>{
-        
+    const handleCreateTeamMember = async (event:React.SubmitEvent) =>{       
         event.preventDefault();
         setMemberMessage("");
 
@@ -74,6 +81,34 @@ const Dashboard = () =>{
 
         } catch(error){
             setMemberMessage("Failed to create team member");
+        }
+    }
+
+    const handleCreateTask = async (event:React.SubmitEvent) =>{
+        event.preventDefault();
+        setTaskMessage("");
+
+        try{
+            await createTask({
+                title: taskTitle,
+                description: taskDescription,
+                project: taskProject,
+                assignedTo: taskAssignedTo,
+                priority: taskPriority,
+                deadline: taskDeadline,
+            });
+            
+            setTaskMessage("Task created successfully");
+
+            setTaskTitle("");
+            setTaskDescription("");
+            setTaskProject("");
+            setTaskAssignedTo("");
+            setTaskPriority("medium");
+            setTaskDeadline("");
+
+        } catch(error){
+            setTaskMessage("Failed to create task");
         }
     }
 
@@ -164,6 +199,80 @@ const Dashboard = () =>{
                         </div>
                     )}
 
+
+                    <h3>Create Task</h3>
+                    <form onSubmit={handleCreateTask}>
+                        <div>
+                            <label>Task Title</label>
+                            <input
+                                type="text"
+                                value={taskTitle}
+                                onChange={(event) => setTaskTitle(event.target.value)}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label>Description</label>
+                            <textarea
+                                value={taskDescription}
+                                onChange={(event) => setTaskDescription(event.target.value)}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label>Project</label>
+                            <select
+                                value={taskProject}
+                                onChange={(event) => setTaskProject(event.target.value)}
+                                required
+                            >
+                               <option value="">Select a project</option>
+                                {projects.map((project) => (
+                                    <option key={project._id} value={project._id}>
+                                        {project.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label>Assigned To</label>
+                            <select
+                                value={taskAssignedTo}
+                                onChange={(event) => setTaskAssignedTo(event.target.value)}
+                                required
+                            >
+                                <option value="">Select a team member</option>
+                                {teamMembers.map((member) => (
+                                        <option key={member._id} value={member._id}>
+                                        {member.name}
+                                </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label>Priority</label>
+                            <select 
+                                 value={taskPriority}
+                                 onChange={(event) => setTaskPriority(event.target.value)}
+                            >
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Deadline</label>
+                            <input
+                                type="datetime-local"
+                                value={taskDeadline}
+                                onChange={(event) => setTaskDeadline(event.target.value)}
+                                required
+                            />
+                        </div>      
+                        <button type="submit">Create Task</button>
+
+                    </form>
+                    {taskMessage && <p>{taskMessage}</p>}
 
                     <h3>Create Project</h3>
                     <form onSubmit={handleCreateProject}>
