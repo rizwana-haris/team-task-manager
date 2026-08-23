@@ -18,3 +18,9 @@ export const createTeamMember = async (memberData: CreateTeamMemberData):Promise
  
     return response.data.user;
 }
+
+export const getTeamMembers = async (): Promise<TeamMember[]> => {
+  const response = await api.get("/user/team-members");
+
+  return response.data.users;
+};

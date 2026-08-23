@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { getProjects,createProject, type Project } from "../services/projectService";
-import { createTeamMember } from "../services/userService";
+import { createTeamMember, getTeamMembers, type TeamMember } from "../services/userService";
 
 interface User {
     userId:string;
@@ -24,6 +24,8 @@ const Dashboard = () =>{
     const [memberEmail, setMemberEmail] = useState("");
     const [memberPassword, setMemberPassword] = useState("");
     const [memberMessage, setMemberMessage] = useState("");
+
+    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
     const handleCreateProject = async (event:React.SubmitEvent) =>{
         
@@ -76,27 +78,27 @@ const Dashboard = () =>{
     }
 
     useEffect(() =>{
-        const fetchUser = async () =>{
+        const fetchData = async () =>{
             try{
                 const response = await api.get("/auth/me");
-                setUser(response.data.user);
-                setMessage(response.data.message);
-            } catch(error){
-                console.error("Failed to fetch user:", error);
-            }
-        }
+                const loggedInUser = response.data.user;
 
-        const fetchProjects = async () =>{
-            try{
-                const data = await getProjects();
-                setProjects(data);
-                console.log("Projects:", data);
+                setUser(loggedInUser);
+                setMessage(response.data.message);
+
+                const projectsData = await getProjects();
+                setProjects(projectsData);
+
+                if (loggedInUser.role === "admin") {
+                    const members = await getTeamMembers();
+                    setTeamMembers(members);
+                }
             } catch(error){
-                console.error("Failed to fetch projects:", error);
+                console.error("Failed to fetch dashboard data:", error);
             }
         }
-        fetchUser();
-        fetchProjects();
+        fetchData();
+
     },[]);
 
     if (!user) {
@@ -146,6 +148,22 @@ const Dashboard = () =>{
                         <button type="submit">Add Team Member</button>
                     </form>
                     {memberMessage && <p>{memberMessage}</p>}
+
+                    <h3>Team Members</h3>
+                    { teamMembers.length===0?(<p>No team members found</p>)
+                    : 
+                    (
+                        <div>
+                            {teamMembers.map((member) =>(
+                                <div key={member._id}>
+                                    <p>Name: {member.name}</p>
+                                    <p>Email: {member.email}</p>
+                                    <p>Role: {member.role}</p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
 
                     <h3>Create Project</h3>
                     <form onSubmit={handleCreateProject}>

@@ -50,7 +50,7 @@ export const getTeamMembers = async (req:Request, res:Response) =>{
 
         const users = await User.find(
             {role:"team_member"},
-            "name email"
+            "name email role"
         )
         return res.status(200).json({users});
 
