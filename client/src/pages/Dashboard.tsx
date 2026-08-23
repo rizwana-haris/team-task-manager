@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { getProjects,createProject, type Project } from "../services/projectService";
+import { createTeamMember } from "../services/userService";
 
 interface User {
     userId:string;
@@ -18,6 +19,11 @@ const Dashboard = () =>{
     const [projectStartDate, setProjectStartDate] = useState("");
     const [projectEndDate, setProjectEndDate] = useState("");
     const [projectMessage, setProjectMessage] = useState("");
+
+    const [memberName, setMemberName] = useState("");
+    const [memberEmail, setMemberEmail] = useState("");
+    const [memberPassword, setMemberPassword] = useState("");
+    const [memberMessage, setMemberMessage] = useState("");
 
     const handleCreateProject = async (event:React.SubmitEvent) =>{
         
@@ -43,6 +49,29 @@ const Dashboard = () =>{
 
         } catch(error){
             setProjectMessage("Failed to create project");
+        }
+    }
+
+    const handleCreateTeamMember = async (event:React.SubmitEvent) =>{
+        
+        event.preventDefault();
+        setMemberMessage("");
+
+        try{
+            await createTeamMember({
+                name: memberName,
+                email: memberEmail,
+                password: memberPassword,
+            });
+            setMemberMessage("Team member created successfully");
+
+            setMemberName("");
+            setMemberEmail("");
+            setMemberPassword("");
+
+
+        } catch(error){
+            setMemberMessage("Failed to create team member");
         }
     }
 
@@ -83,6 +112,40 @@ const Dashboard = () =>{
             {user.role==="admin" && (
                 <div>
                     <h2>Admin Dashboard</h2>
+
+                    <h3>Add Team Member</h3>
+                    <form onSubmit={handleCreateTeamMember}>
+                        <div>
+                            <label>Name</label>
+                            <input
+                                type="text"
+                                value={memberName}
+                                onChange={(event) => setMemberName(event.target.value)}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label>Email</label>
+                            <input
+                                type="email"
+                                value={memberEmail}
+                                onChange={(event) => setMemberEmail(event.target.value)}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label>Password</label>
+                            <input
+                                type="password"
+                                value={memberPassword}
+                                onChange={(event) => setMemberPassword(event.target.value)}
+                                required
+                                minLength={6}
+                            />
+                        </div>
+                        <button type="submit">Add Team Member</button>
+                    </form>
+                    {memberMessage && <p>{memberMessage}</p>}
 
                     <h3>Create Project</h3>
                     <form onSubmit={handleCreateProject}>
