@@ -50,9 +50,14 @@ export const createTask = async( req:Request,res:Response) =>{
         }
 
         const task = await Task.create({ title,description, project,assignedTo,priority,deadline });
+        
+        const populatedTask = await Task.findById(task._id)
+            .populate("project", "name")
+            .populate("assignedTo", "name email");
+        
         return res.status(201).json({
             message:"Task created successfully",
-            task
+            task: populatedTask
         });
 
     } catch(error){
