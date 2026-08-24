@@ -40,3 +40,12 @@ export const getTasks = async (): Promise<Task[]> => {
 
   return response.data.tasks;
 };
+
+export const updateTask = async (
+  taskId: string,
+  taskData: { status: string }
+): Promise<Task> => {
+  const response = await api.patch(`/tasks/${taskId}`, taskData);
+
+  return response.data.task as Task;
+};

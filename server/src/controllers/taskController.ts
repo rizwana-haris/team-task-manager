@@ -203,9 +203,14 @@ export const updateTask = async(req:Request, res:Response) =>{
             task.deadline = new Date(deadline);
         }
         await task.save();
+
+        const updatedTask = await Task.findById(task._id)
+            .populate("project", "name")
+            .populate("assignedTo", "name email");
+
         return res.status(200).json({
             message: "Task updated successfully",
-            task,
+            task: updatedTask,
         });
         
     } catch(error){

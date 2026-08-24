@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTasks, type Task } from "../../services/taskService";
+import { getTasks, updateTask, type Task } from "../../services/taskService";
 
 
 const TeamMemberDashboard = () => {
@@ -21,6 +21,21 @@ const TeamMemberDashboard = () => {
     fetchTasks();
   },[]);
 
+  const handleStatusChange = async(
+    taskId:string,
+    status:string
+  ) =>{
+    try{
+      const updatedTask = await updateTask(taskId,{status});
+
+      setTasks((previousTasks) =>
+        previousTasks.map((task) =>
+        task._id ===taskId ? updatedTask : task))
+    } catch(error){
+      console.error("Failed to update task status:", error);
+    }
+  }
+
   return (
     <div>
       <h2>Team Member Dashboard</h2>
@@ -36,7 +51,16 @@ const TeamMemberDashboard = () => {
               <p>Description: {task.description}</p>
               <p>Project: {task.project.name}</p>
               <p>Priority: {task.priority}</p>
-              <p>Status: {task.status}</p>
+              <p>Status: {" "}
+                <select value ={task.status}
+                        onChange={(event) =>
+                          handleStatusChange(task._id, event.target.value)
+                        }>
+                        <option value="todo">To Do</option>  
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                </select>
+              </p>
               <p>Deadline: {new Date(task.deadline).toLocaleDateString()}</p>
             </div>
           )
