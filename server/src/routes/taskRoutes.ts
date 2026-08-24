@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createTask, deleteTask, getTaskById, getTasks, updateTask } from "../controllers/taskController";
+import { addProgressUpdate, createTask, deleteTask, getTaskById, getTasks, updateTask } from "../controllers/taskController";
 import { protect } from "../middleware/authMiddleware";
 import { requireRole } from "../middleware/roleMiddleware";
 import { createComment, getTaskComments } from "../controllers/commentController";
@@ -13,5 +13,6 @@ router.get("/:id/comments",protect,getTaskComments);
 router.get("/:id",protect,getTaskById);
 router.patch("/:id",protect,updateTask);
 router.delete("/:id",protect,requireRole("admin"),deleteTask);
+router.post("/:id/progress", protect, addProgressUpdate);
 
 export default router;

@@ -7,6 +7,12 @@ interface IDeadlineHistory {
   changedAt: Date;
 }
 
+interface IProgressUpdate {
+  message: string;
+  updatedBy: mongoose.Types.ObjectId;
+  updatedAt: Date;
+}
+
 export interface ITask extends Document {
   title: string;
   description: string;
@@ -16,6 +22,7 @@ export interface ITask extends Document {
   priority: "low" | "medium" | "high";
   deadline: Date;
   deadlineHistory: IDeadlineHistory[];
+  progressUpdates: IProgressUpdate[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,6 +46,30 @@ const deadlineHistorySchema = new Schema<IDeadlineHistory>(
     },
 
     changedAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
+    _id: false,
+  }
+);
+
+const progressUpdateSchema = new Schema<IProgressUpdate>(
+  {
+    message: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    updatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    updatedAt: {
       type: Date,
       default: Date.now,
     },
@@ -96,6 +127,12 @@ const taskSchema = new Schema<ITask>(
       type: [deadlineHistorySchema],
       default: [],
     },
+
+    progressUpdates: {
+      type: [progressUpdateSchema],
+      default: [],
+    },
+    
   },
   {
     timestamps: true,
