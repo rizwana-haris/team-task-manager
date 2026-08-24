@@ -16,6 +16,16 @@ export interface Task {
   status: string;
   priority: string;
   deadline: string;
+
+  progressUpdates: {
+  message: string;
+  updatedBy: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  updatedAt: string;
+}[];
 }
 
 export interface CreateTaskData {
@@ -46,6 +56,17 @@ export const updateTask = async (
   taskData: { status: string }
 ): Promise<Task> => {
   const response = await api.patch(`/tasks/${taskId}`, taskData);
+
+  return response.data.task as Task;
+};
+
+export const addProgressUpdate = async (
+  taskId: string,
+  message: string
+): Promise<Task> => {
+  const response = await api.post(`/tasks/${taskId}/progress`, {
+    message,
+  });
 
   return response.data.task as Task;
 };
