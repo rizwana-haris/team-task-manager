@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createProject, getProjects, type Project } from "../../services/projectService";
+import { createProject, getProjectProgress, getProjects, type Project, type ProjectProgress } from "../../services/projectService";
 
 const ProjectManagement = () => {
 
@@ -11,11 +11,21 @@ const ProjectManagement = () => {
     const [projectEndDate, setProjectEndDate] = useState("");
     const [projectMessage, setProjectMessage] = useState("");
 
+    const [projectProgress, setProjectProgress] = useState<
+        Record<string, ProjectProgress>
+    >({});
+
     useEffect (()=>{
             const fetchProjects = async() =>{
                 try{
                     const projectsData = await getProjects();
                     setProjects(projectsData);
+
+                    for(const project of projectsData){
+                        const progress = await getProjectProgress(project._id);
+
+                        setProjectProgress((previousProgress) =>({...previousProgress,[project._id]:progress}))
+                    }
 
                 } catch(error){
                     console.error("Failed to fetch projects:", error);
@@ -111,6 +121,26 @@ const ProjectManagement = () => {
                                 {new Date(project.endDate).toLocaleDateString()}
                             </p>
                             <p>Created By :{project.createdBy.name}</p>
+                            {projectProgress[project._id] && (
+                            <div>
+                                <h5>Project Progress</h5>
+                                <p>
+                                    Total Tasks: {projectProgress[project._id].totalTasks}
+                                </p>
+                                <p>
+                                    To Do: {projectProgress[project._id].todo}
+                                </p>
+                                <p>
+                                    In Progress: {projectProgress[project._id].in_progress}
+                                </p>
+                                <p>
+                                    Completed: {projectProgress[project._id].completed}
+                                </p>
+                                <p>
+                                    Progress: {projectProgress[project._id].percentage}%
+                                </p>
+                            </div>
+                            )}
                         </div>
 
                     )))}
