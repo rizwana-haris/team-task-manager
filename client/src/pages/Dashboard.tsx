@@ -2,71 +2,70 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import TeamMemberDashboard from "../components/dashboard/TeamMemberDashboard";
 import AdminDashboard from "../components/dashboard/AdminDashboard";
+import { useNavigate } from "react-router-dom";
 
 interface User {
-    userId:string;
-    role:"admin" | "team_member";
+    userId: string;
+    role: "admin" | "team_member";
 }
 
-const Dashboard = () =>{
-    const[user,setUser] = useState<User|null>(null);
-    const[message,setMessage] = useState("");
+const Dashboard = () => {
+    const [user, setUser] = useState<User | null>(null);
 
-    useEffect(() =>{
-        const fetchData = async () =>{
-            try{
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
                 const response = await api.get("/auth/me");
                 const loggedInUser = response.data.user;
 
                 setUser(loggedInUser);
-                setMessage(response.data.message);
-              
-            } catch(error){
+
+            } catch (error) {
                 console.error("Failed to fetch dashboard data:", error);
             }
         }
         fetchData();
 
-    },[]);
+    }, []);
+
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        navigate("/login");
+    }
 
     if (!user) {
         return <p>Loading...</p>;
     }
 
-   return (
-  <div className="min-h-screen bg-gray-100">
+    return (
+        <div className="min-h-screen bg-gray-100">
 
-    {/* Header */}
-    <header className="bg-white border-b">
-      <div className="flex items-center justify-between px-6 py-4">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Team Project Manager
-        </h1>
+            {/* Header */}
+            <header className="bg-white border-b">
+                <div className="flex items-center justify-between px-6 py-4">
+                    <h1 className="text-2xl font-bold text-gray-800">
+                        TEAM PROJECT MANAGER
+                    </h1>
 
-        <button className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600">
-          Logout
-        </button>
-      </div>
-    </header>
+                    <button
+                        onClick={handleLogout}
+                        className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600">
+                        Logout
+                    </button>
+                </div>
+            </header>
 
-    {/* Main */}
-    <main className="p-6">
+            {/* Main */}
+            <main className="p-6">
 
-      <h2 className="mb-2 text-2xl font-semibold text-gray-800">
-        Dashboard
-      </h2>
+                {user.role === "admin" && <AdminDashboard />}
 
-      <p className="mb-6 text-gray-600">
-        {message}
-      </p>
+                {user.role === "team_member" && <TeamMemberDashboard />}
 
-      {user.role === "admin" && <AdminDashboard />}
-
-      {user.role === "team_member" && <TeamMemberDashboard />}
-
-    </main>
-  </div>
-);
+            </main>
+        </div>
+    );
 }
 
 export default Dashboard;
