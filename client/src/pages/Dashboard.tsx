@@ -33,17 +33,40 @@ const Dashboard = () =>{
         return <p>Loading...</p>;
     }
 
-    return(
-        <div>
-            <h1>Dashboard</h1>
+   return (
+  <div className="min-h-screen bg-gray-100">
 
-            <p>{message}</p>
+    {/* Header */}
+    <header className="bg-white border-b">
+      <div className="flex items-center justify-between px-6 py-4">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Team Project Manager
+        </h1>
 
-            {user.role === "admin" && <AdminDashboard />}
+        <button className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600">
+          Logout
+        </button>
+      </div>
+    </header>
 
-            {user.role === "team_member" && <TeamMemberDashboard/>}
-        </div>
-    )
+    {/* Main */}
+    <main className="p-6">
+
+      <h2 className="mb-2 text-2xl font-semibold text-gray-800">
+        Dashboard
+      </h2>
+
+      <p className="mb-6 text-gray-600">
+        {message}
+      </p>
+
+      {user.role === "admin" && <AdminDashboard />}
+
+      {user.role === "team_member" && <TeamMemberDashboard />}
+
+    </main>
+  </div>
+);
 }
 
 export default Dashboard;
