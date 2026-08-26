@@ -63,42 +63,65 @@ const TeamMemberDashboard = () => {
   };
 
   return (
-    <div>
-      <h2>Team Member Dashboard</h2>
-      <p>Welcome Team Member!</p>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-gray-800"> Team Member Dashboard </h2>
+        <p className="mt-1 text-gray-500"> Welcome! Here are your assigned tasks. </p>
+      </div>
 
-      <h3>My Tasks</h3>
-      {tasks.length === 0 ? (<p>No tasks assigned to you</p>)
+      <h3 className="mb-4 text-xl font-semibold text-gray-800"> My Tasks </h3>
+      {tasks.length === 0 ? (<p className="text-gray-500">No tasks assigned to you</p>)
         : (
-          <div>
+          <div className="grid gap-5 md:grid-cols-2">
             {tasks.map((task) => (
-              <div key={task._id}>
-                <h4>{task.title}</h4>
-                <p>Description: {task.description}</p>
-                <p>Project: {task.project.name}</p>
-                <p>Priority: {task.priority}</p>
-                <p>Status: {" "}
-                  <select value={task.status}
-                    onChange={(event) =>
-                      handleStatusChange(task._id, event.target.value)
-                    }>
+              <div key={task._id}
+                className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+
+                <div className="flex items-start justify-between gap-3">
+                  <h4 className="text-lg font-semibold text-gray-800"> {task.title} </h4>
+                  <span className={`rounded-full px-3 py-1 text-xs font-medium ${task.priority === "high" ? "bg-red-100 text-red-700"
+                    : task.priority === "medium" ? "bg-yellow-100 text-yellow-700"
+                      : "bg-green-100 text-green-700"}`} >
+                    {task.priority}
+                  </span>
+                </div>
+
+                <p className="mt-3 text-sm text-gray-600">{task.description}</p>
+
+                <div className="mt-4 space-y-2 text-sm">
+                  <p>
+                    <span className="font-medium text-gray-800"> Project: </span>{" "}
+                    {task.project.name}
+                  </p>
+                  <p>
+                    <span className="font-medium text-gray-800"> Deadline: </span>{" "}
+                    {new Date(task.deadline).toLocaleDateString()}
+                  </p>
+                </div>
+
+                <div className="mt-4">
+                  <label className="mb-1 block text-sm font-medium text-gray-700"> Status </label>
+                  <select
+                    value={task.status}
+                    onChange={(event) => handleStatusChange(task._id, event.target.value)}
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500">
                     <option value="todo">To Do</option>
                     <option value="in_progress">In Progress</option>
                     <option value="completed">Completed</option>
                   </select>
-                </p>
-                <p>Deadline: {new Date(task.deadline).toLocaleDateString()}</p>
+                </div>
 
-                <h5>Progress Updates</h5>
+                <h5 className="font-semibold text-gray-800"> Progress Updates </h5>
 
                 {task.progressUpdates.length === 0 ? (
-                  <p>No progress updates yet</p>
+                  <p className="mt-2 text-sm text-gray-500">No progress updates yet</p>
                 ) : (
-                  <div>
+                  <div className="mt-3 space-y-3">
                     {task.progressUpdates.map((update, index) => (
-                      <div key={index}>
-                        <p>{update.message}</p>
-                        <small>
+                      <div key={index}
+                        className="rounded-lg bg-gray-50 p-3">
+                        <p className="text-sm text-gray-700">{update.message}</p>
+                        <small className="text-gray-400">
                           {new Date(update.updatedAt).toLocaleDateString()}
                         </small>
                       </div>
@@ -106,16 +129,20 @@ const TeamMemberDashboard = () => {
                   </div>
                 )}
 
+                <div className="mt-4 flex gap-2">
                 <input
                   type="text"
                   value={progressMessage}
                   onChange={(event) => setProgressMessage(event.target.value)}
                   placeholder="Add progress update"
+                  className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
                 />
 
-                <button onClick={() => handleAddProgress(task._id)}>
-                  Add Update
+                <button onClick={() => handleAddProgress(task._id)}
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+                  Add 
                 </button>
+              </div>
               </div>
             )
             )}
