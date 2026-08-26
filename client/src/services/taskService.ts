@@ -16,6 +16,17 @@ export interface Task {
   status: string;
   priority: string;
   deadline: string;
+  
+  deadlineHistory: {
+  oldDeadline: string;
+  newDeadline: string;
+  changedBy: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  changedAt: string;
+}[];
 
   progressUpdates: {
   message: string;

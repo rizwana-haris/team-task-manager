@@ -86,6 +86,7 @@ export const getTasks = async (req: Request, res: Response) => {
       tasks = await Task.find()
         .populate("project", "name")
         .populate("assignedTo", "name email")
+        .populate("deadlineHistory.changedBy", "name email")
         .sort({ createdAt: -1 });
     } else {
       tasks = await Task.find({ assignedTo: req.user.userId })
