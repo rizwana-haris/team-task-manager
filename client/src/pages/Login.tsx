@@ -5,10 +5,13 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = async (event: React.SubmitEvent) => {
         event.preventDefault();
+
+        setError("");
 
         try {
             const response = await api.post("/auth/login", {
@@ -22,8 +25,13 @@ const Login = () => {
 
             navigate("/dashboard");
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("Login error:", error);
+            if (error.response?.status === 401) {
+                setError("Invalid email or password.");
+            } else {
+                setError("Something went wrong. Please try again.");
+            }
         }
     };
 
@@ -56,6 +64,12 @@ const Login = () => {
                             className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-blue-500"
                             placeholder="Enter your password" />
                     </div>
+
+                    {error && (
+                        <p className="text-sm text-red-600">
+                            {error}
+                        </p>
+                    )}
 
                     <button type="submit"
                         className="w-full rounded-lg bg-blue-600 py-2.5 font-medium text-white hover:bg-blue-700">
