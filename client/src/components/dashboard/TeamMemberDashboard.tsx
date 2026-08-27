@@ -65,7 +65,7 @@ const TeamMemberDashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-800"> Team Member Dashboard </h2>
+        <h2 className="text-2xl font-bold text-gray-800"> TEAM MEMBER DASHBOARD </h2>
         <p className="mt-1 text-gray-500"> Welcome! Here are your assigned tasks. </p>
       </div>
 
@@ -79,7 +79,7 @@ const TeamMemberDashboard = () => {
 
                 <div className="flex items-start justify-between gap-3">
                   <h4 className="text-lg font-semibold text-gray-800"> {task.title} </h4>
-                  <span className={`rounded-full px-3 py-1 text-xs font-medium ${task.priority === "high" ? "bg-red-100 text-red-700"
+                  <span className={`rounded-full px-3 py-1 text-xs font-medium ${task.priority === "hard" ? "bg-red-100 text-red-700"
                     : task.priority === "medium" ? "bg-yellow-100 text-yellow-700"
                       : "bg-green-100 text-green-700"}`} >
                     {task.priority}
@@ -130,19 +130,19 @@ const TeamMemberDashboard = () => {
                 )}
 
                 <div className="mt-4 flex gap-2">
-                <input
-                  type="text"
-                  value={progressMessage}
-                  onChange={(event) => setProgressMessage(event.target.value)}
-                  placeholder="Add progress update"
-                  className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
-                />
+                  <input
+                    type="text"
+                    value={progressMessage}
+                    onChange={(event) => setProgressMessage(event.target.value)}
+                    placeholder="Add progress update"
+                    className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                  />
 
-                <button onClick={() => handleAddProgress(task._id)}
-                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-                  Add 
-                </button>
-              </div>
+                  <button onClick={() => handleAddProgress(task._id)}
+                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+                    Add
+                  </button>
+                </div>
               </div>
             )
             )}

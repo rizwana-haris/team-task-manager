@@ -43,14 +43,14 @@ const Dashboard = () => {
 
             {/* Header */}
             <header className="bg-white border-b">
-                <div className="flex items-center justify-between px-6 py-4">
+                <div className="relative flex items-center justify-center px-6 py-4">
                     <h1 className="text-2xl font-bold text-gray-800">
                         TEAM PROJECT MANAGER
                     </h1>
 
                     <button
                         onClick={handleLogout}
-                        className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600">
+                        className="absolute right-6 rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600">
                         Logout
                     </button>
                 </div>

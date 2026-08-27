@@ -57,7 +57,7 @@ const TeamMemberManagement = () => {
 
             <div className="rounded-lg border border-gray-200 bg-gray-50 p-5">
                 <form onSubmit={handleCreateTeamMember}
-                    className="grid gap-4 md:grid-cols-2">
+                    className="grid gap-4 md:grid-cols-3">
                     <div>
                         <label className="mb-1 block text-sm font-medium text-gray-700">Name</label>
                         <input
@@ -91,7 +91,7 @@ const TeamMemberManagement = () => {
                     </div>
                     <div className="flex items-end">
                         <button type="submit"
-                            className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700" >
+                            className=" rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700" >
                             Add Team Member
                         </button>
                     </div>

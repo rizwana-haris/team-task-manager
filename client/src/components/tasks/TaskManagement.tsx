@@ -154,7 +154,7 @@ const TaskManagement = () => {
                     </div>
                     <div className="flex items-end">
                         <button type="submit"
-                            className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700">
+                            className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700">
                             Create Task
                         </button>
                     </div>
@@ -168,20 +168,24 @@ const TaskManagement = () => {
                 <h4 className="mb-4 text-lg font-semibold text-gray-800"> Tasks </h4>
                 {tasks.length === 0 ? (<p className="text-gray-500">No tasks found</p>)
                     : (
-                        <div className="grid gap-4 md:grid-cols-2">
+                        <div className="grid gap-4 md:grid-cols-3">
                             {tasks.map((task) => (
                                 <div key={task._id}
-                                className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm" >
-                                    <div className="flex items-start justify-between gap-3"> 
-                                        <h5 className="text-lg font-semibold text-gray-800"> {task.title} </h5> 
-                                        <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700"> {task.priority} </span> 
+                                    className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm" >
+                                    <div className="flex items-start justify-between gap-3">
+                                        <h5 className="text-lg font-semibold text-gray-800"> {task.title} </h5>
+                                        <span className={`rounded-full px-3 py-1 text-xs font-medium ${task.priority === "hard" ? "bg-red-100 text-red-700"
+                                            : task.priority === "medium" ? "bg-yellow-100 text-yellow-700"
+                                                : "bg-green-100 text-green-700"}`} >
+                                            {task.priority}
+                                        </span>
                                     </div>
                                     <p className="mt-2 text-sm text-gray-600">{task.description}</p>
-                                    <div className="mt-4 space-y-2 text-sm text-gray-600"> 
-                                        <p> <span className="font-medium text-gray-800"> Project: </span>{" "} {task.project.name} </p> 
-                                        <p> <span className="font-medium text-gray-800"> Assigned To: </span>{" "} {task.assignedTo.name} </p> 
-                                        <p> <span className="font-medium text-gray-800"> Status: </span>{" "} {task.status} </p> 
-                                        <p> <span className="font-medium text-gray-800"> Deadline: </span>{" "} {new Date(task.deadline).toLocaleDateString()} </p> 
+                                    <div className="mt-4 space-y-2 text-sm text-gray-600">
+                                        <p> <span className="font-medium text-gray-800"> Project: </span>{" "} {task.project.name} </p>
+                                        <p> <span className="font-medium text-gray-800"> Assigned To: </span>{" "} {task.assignedTo.name} </p>
+                                        <p> <span className="font-medium text-gray-800"> Status: </span>{" "} {task.status} </p>
+                                        <p> <span className="font-medium text-gray-800"> Deadline: </span>{" "} {new Date(task.deadline).toLocaleDateString()} </p>
                                     </div>
 
                                     {task.deadlineHistory.length > 0 && (
@@ -190,23 +194,23 @@ const TaskManagement = () => {
 
                                             {task.deadlineHistory.map((history, index) => (
                                                 <div key={index}
-                                                className="border-b border-gray-200 pb-3 last:border-b-0 last:pb-0" >
-                                                    <p className="text-sm text-gray-600"> 
+                                                    className="border-b border-gray-200 pb-3 last:border-b-0 last:pb-0" >
+                                                    <p className="text-sm text-gray-600">
                                                         <span className="font-medium text-gray-800"> Previous: </span>{" "}
-                                                        {new Date( history.oldDeadline ).toLocaleDateString()} 
+                                                        {new Date(history.oldDeadline).toLocaleDateString()}
                                                     </p>
 
-                                                   <p className="text-sm text-gray-600"> 
+                                                    <p className="text-sm text-gray-600">
                                                         <span className="font-medium text-gray-800"> Updated: </span>{" "}
                                                         {new Date(history.newDeadline).toLocaleDateString()}
                                                     </p>
 
-                                                    <p className="text-sm text-gray-600"> 
+                                                    <p className="text-sm text-gray-600">
                                                         <span className="font-medium text-gray-800"> Changed By: </span>{" "}
                                                         {history.changedBy.name}
                                                     </p>
 
-                                                    <p className="text-sm text-gray-600"> 
+                                                    <p className="text-sm text-gray-600">
                                                         <span className="font-medium text-gray-800"> Changed At: </span>{" "}
                                                         {new Date(history.changedAt).toLocaleDateString()}
                                                     </p>

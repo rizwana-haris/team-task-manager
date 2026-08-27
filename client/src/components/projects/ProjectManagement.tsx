@@ -56,6 +56,15 @@ const ProjectManagement = () => {
             const data = await getProjects();
             setProjects(data);
 
+            for (const project of data) {
+            const progress = await getProjectProgress(project._id);
+
+            setProjectProgress((previousProgress) => ({
+                ...previousProgress,
+                [project._id]: progress,
+            }));
+        }
+        
         } catch (error) {
             setProjectMessage("Failed to create project");
         }
@@ -113,17 +122,20 @@ const ProjectManagement = () => {
                     </div>
 
                     <div className="flex items-end">
-                        <button type="submit" className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700" > Create Project </button>
+                        <button type="submit" className=" rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700" > Create Project </button>
                     </div>
                 </form>
                 {projectMessage && (<p className="mt-4 text-sm font-medium text-green-600"> {projectMessage} </p>)}
             </div>
 
-
+            <div>
             <h4 className="mb-4 text-lg font-semibold text-gray-800"> Projects </h4>
 
             {projects.length === 0 ? (<p className="text-gray-500">No projects found</p>)
-                : (projects.map((project) => (
+                : (
+                    <div className="grid gap-4 md:grid-cols-3">
+
+                    {projects.map((project) => (
                     <div key={project._id}
                         className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
                         <h5 className="text-lg font-semibold text-gray-800"> {project.name} </h5>
@@ -150,7 +162,7 @@ const ProjectManagement = () => {
                                 </div>
 
 
-                                <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div className="grid grid-cols-4 gap-3 text-sm">
                                     <div>
                                         <p className="text-gray-500">Total Tasks</p>
                                         <p className="font-semibold text-gray-800">
@@ -180,8 +192,10 @@ const ProjectManagement = () => {
                         )}
                     </div>
 
-                )))}
-
+                ))}
+                </div>
+                )}
+            </div>
         </div>
     )
 }
