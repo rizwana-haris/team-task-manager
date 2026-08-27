@@ -297,6 +297,12 @@ npm run dev
 
 Then open the frontend URL shown by Vite in your browser.
 
+## ER Diagram
+
+The database structure of the Team Project & Task Management Application is shown below.
+
+![ER Diagram](docs/ER-Diagram.png)
+
 ## Future Improvements
 
 - Task filtering and sorting
